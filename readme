@@ -1,0 +1,17 @@
+todolist_app/
+├── app/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── auth.py
+│   └── templates/
+│       ├── base.html
+│       ├── index.html
+│       ├── login.html
+│       └── register.html
+├── static/
+│   ├── style.css
+│   └── script.js
+├── requirements.txt
+├── run.py
+└── config.py

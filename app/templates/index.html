@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}My Tasks - TodoList{% endblock %}
+
+{% block content %}
+<div class="task-container">
+    <h2>My Tasks</h2>
+    
+    <!-- Add Task Form -->
+    <div class="add-task-form">
+        <h3>Add New Task</h3>
+        <form method="POST" action="{{ url_for('main.add_task') }}">
+            <div class="form-group">
+                <input type="text" name="title" placeholder="Task title" required>
+            </div>
+            <div class="form-group">
+                <textarea name="description" placeholder="Description (optional)"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <select name="priority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="date" name="due_date">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+    </div>
+    
+    <!-- Tasks List -->
+    <div class="tasks-list">
+        {% if tasks %}
+            {% for task in tasks %}
+            <div class="task-card" data-task-id="{{ task.id }}">
+                <div class="task-header">
+                    <div class="task-checkbox">
+                        <input type="checkbox" {% if task.completed %}checked{% endif %} 
+                               onchange="toggleTask({{ task.id }})">
+                    </div>
+                    <div class="task-title">
+                        <h3>{{ task.title }}</h3>
+                        {% if task.due_date %}
+                        <span class="due-date">Due: {{ task.due_date.strftime('%Y-%m-%d') }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="task-priority priority-{{ task.priority }}">
+                        {{ task.priority|capitalize }}
+                    </div>
+                </div>
+                
+                {% if task.description %}
+                <div class="task-description">{{ task.description }}</div>
+                {% endif %}
+                
+                <div class="task-actions">
+                    <button class="btn btn-edit" onclick="editTask({{ task.id }})">Edit</button>
+                    <button class="btn btn-delete" onclick="deleteTask({{ task.id }})">Delete</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-tasks">No tasks yet. Add your first task!</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Edit Task</h2>
+        <form id="editForm">
+            <input type="hidden" id="editTaskId">
+            <div class="form-group">
+                <input type="text" id="editTitle" placeholder="Task title" required>
+            </div>
+            <div class="form-group">
+                <textarea id="editDescription" placeholder="Description (optional)"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <select id="editPriority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="date" id="editDueDate">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Task</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
